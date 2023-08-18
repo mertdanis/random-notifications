@@ -1,9 +1,14 @@
-import { React } from "react";
-import { Howl, Howler } from "howler";
-import notificationSound from "../audio/1.mp3";
+import { Howl } from "howler";
+import notificationSound from "../../public/sound/1.mp3";
 import { useEffect } from "react";
+
+import { useData } from "../Context/MainContext";
+
 const soundSrc = notificationSound;
+
 function Audio({ content }) {
+  const { data } = useData();
+
   const getNotfSound = (src) => {
     const sound = new Howl({
       src,
@@ -17,8 +22,7 @@ function Audio({ content }) {
 
   useEffect(() => {
     getNotfSound(soundSrc);
-    console.log("content");
-  }, [content.length]);
+  }, [data.length]);
 }
 
 export default Audio;

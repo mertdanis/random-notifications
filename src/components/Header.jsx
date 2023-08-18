@@ -1,28 +1,28 @@
-import { useState } from "react";
+import React from "react";
 
-function Header({ content, setContent }) {
-  const stateKey = content.filter((stateKey) => {
-    return stateKey.state === "unread";
-  });
+import { useData } from "../Context/MainContext";
+import { Button } from "@mui/material";
 
-  const markasRead = () => {
-    const readAll = content.map((key) =>
-      key.state === "unread" ? { ...key, state: "read" } : key
-    );
-    setContent(readAll);
-  };
+function Header() {
+  const { data, dispatch, unreadedNotifications } = useData();
+
+  const notfLength = unreadedNotifications.length;
 
   return (
-    <div className="container-header">
-      <div className="container-header-left">
-        <p className="container-header-left-notf">Notification</p>
-        <p className="container-header-left-number">{stateKey.length}</p>
-      </div>
-      <div>
-        <button onClick={markasRead} className="container-header-btn">
-          Mark all as read
-        </button>
-      </div>
+    <div className="flex justify-between gap-6">
+      <p>
+        Notifications <span>{notfLength}</span>
+      </p>
+
+      <Button
+        onClick={() => {
+          dispatch({
+            type: "data/readAll",
+          });
+        }}
+      >
+        Mark all as read
+      </Button>
     </div>
   );
 }

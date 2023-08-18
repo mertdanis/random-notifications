@@ -1,16 +1,23 @@
-import "./style/style.css";
 import Header from "./components/Header";
 import Content from "./components/Content";
-import { useEffect, useState } from "react";
-// import { uniqueNamesGenerator, Config, names } from "unique-names-generator";
-import Audio from "./audio/Audio";
 
-function App({ getNotfSound, soundSrc }) {
+import ContentFilter from "./components/ContentFilter";
+
+import Audio from "./components/Audio";
+
+import "./style/global.css";
+
+import { useData } from "./Context/MainContext";
+
+function App() {
+  <Audio />;
   return (
-    <div className="container">
-      <Header content={content} setContent={setContent} />
-      <Content content={content} setContent={setContent} />
-      <Audio content={content} />
+    <div className="flex bg-zinc-900   justify-center items-center h-screen w-screen">
+      <div className="flex flex-col bg-white text-black p-[2rem] rounded-2xl gap-6">
+        <Header />
+        <Content />
+        <ContentFilter />
+      </div>
     </div>
   );
 }

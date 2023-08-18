@@ -1,49 +1,78 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-function Content({ content, setContent }) {
-  let handleCheck = () => {
-    let contentAll = document.querySelectorAll(".container-content");
-    contentAll.forEach((div, i) => {
-      div.addEventListener("click", () => {
-        let readDiv = [...content, (content[i].state = "read")];
-        setContent(readDiv);
-      });
-    });
-  };
+import { useData } from "../Context/MainContext";
 
-  return content.map((item) => {
-    return (
-      <div className="container-content" onClick={handleCheck}>
-        <div>
-          {item.state == "unread" ? (
-            <div className="content content-unread">
-              <div className="content-wrap">
-                <img src={item.img} className="container-content-img" />
-                <div>
-                  <div className="content-wrap-2">
-                    <p className="content-text">{item.name}</p>{" "}
-                    <p className="content-notf">{item.notf}</p>
-                  </div>
-                  <div>{item.date}</div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="content-wrap">
-              <img src={item.img} className="container-content-img" />
-              <div>
-                <div className="content-wrap-2">
-                  <p className="content-text">{item.name}</p>{" "}
-                  <p className="content-notf">{item.notf}</p>
-                </div>
-                <p className="content-date">{item.date}</p>
-              </div>
-            </div>
-          )}
-        </div>
+function Content() {
+  const { data, dispatch, filter, unreadedNotifications } = useData();
+
+  return (
+    <div>
+      {filter === "all" &&
+        data.map((value, index) => {
+          return (
+            <ContentDiv
+              name={value.name}
+              notification={value.notificationText}
+              status={value.status}
+              img={value.img}
+              key={value.name}
+              dispatch={dispatch}
+              index={index}
+            />
+          );
+        })}
+
+      {filter === "unread" &&
+        unreadedNotifications.map((value, index) => {
+          return (
+            <ContentDiv
+              name={value.name}
+              notification={value.notificationText}
+              status={value.status}
+              img={value.img}
+              key={value.name}
+              dispatch={dispatch}
+              index={index}
+            />
+          );
+        })}
+
+      {/* {filter === "important" &&
+        unreadedNotifications.map((value, index) => {
+          return (
+            <ContentDiv
+              name={value.name}
+              notification={value.notificationText}
+              status={value.status}
+              img={value.img}
+              key={value.name}
+              dispatch={dispatch}
+              index={index}
+            />
+          );
+        })} */}
+    </div>
+  );
+}
+
+function ContentDiv({ name, notification, status, img, dispatch, index }) {
+  return (
+    <div
+      onClick={() => {
+        dispatch({
+          type: "data/toggleNotification",
+          payload: index,
+        });
+      }}
+      className={`flex  items-center gap-6 cursor-pointer border-2 border-black px-6 py-1 ${
+        status === false ? "bg-red-300" : "bg-blue-500"
+      }`}
+    >
+      <img className="h-12 my-3" src={`${img}`} alt={`avatar of ${name}`} />
+      <div className="flex gap-6">
+        <p>{name}</p>
+        <p>{notification}</p>
       </div>
-    );
-  });
+    </div>
+  );
 }
 
 export default Content;
