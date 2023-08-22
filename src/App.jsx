@@ -10,10 +10,10 @@ import "./style/global.css";
 import { useData } from "./Context/MainContext";
 
 function App() {
-  <Audio />;
   return (
     <div className="flex bg-zinc-900   justify-center items-center h-screen w-screen">
-      <div className="flex flex-col bg-white text-black p-[2rem] rounded-2xl gap-6">
+      <div className="flex flex-col bg-white text-black p-[2rem] rounded-2xl gap-6 h-5/6	 overflow-y-auto">
+        <Audio />
         <Header />
         <Content />
         <ContentFilter />

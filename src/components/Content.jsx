@@ -1,7 +1,14 @@
 import { useData } from "../Context/MainContext";
 
 function Content() {
-  const { data, dispatch, filter, unreadedNotifications } = useData();
+  const {
+    data,
+    dispatch,
+    filter,
+    unreadedNotifications,
+    isImportant,
+    importantNotifications,
+  } = useData();
 
   return (
     <div>
@@ -16,6 +23,7 @@ function Content() {
               key={value.name}
               dispatch={dispatch}
               index={index}
+              isImportant={value.isImportant}
             />
           );
         })}
@@ -31,12 +39,13 @@ function Content() {
               key={value.name}
               dispatch={dispatch}
               index={index}
+              isImportant={value.isImportant}
             />
           );
         })}
 
-      {/* {filter === "important" &&
-        unreadedNotifications.map((value, index) => {
+      {filter === "important" &&
+        importantNotifications.map((value, index) => {
           return (
             <ContentDiv
               name={value.name}
@@ -46,30 +55,75 @@ function Content() {
               key={value.name}
               dispatch={dispatch}
               index={index}
+              isImportant={value.isImportant}
             />
           );
-        })} */}
+        })}
     </div>
   );
 }
 
-function ContentDiv({ name, notification, status, img, dispatch, index }) {
+function ContentDiv({
+  name,
+  notification,
+  status,
+  img,
+  dispatch,
+  index,
+  isImportant,
+}) {
   return (
     <div
-      onClick={() => {
-        dispatch({
-          type: "data/toggleNotification",
-          payload: index,
-        });
-      }}
-      className={`flex  items-center gap-6 cursor-pointer border-2 border-black px-6 py-1 ${
-        status === false ? "bg-red-300" : "bg-blue-500"
+      className={`flex transition duration-700 items-center  gap-6 cursor-pointer  px-6 py-1 border-b-[2px] border-black ${
+        status === false ? "bg-gray-300" : ""
       }`}
     >
-      <img className="h-12 my-3" src={`${img}`} alt={`avatar of ${name}`} />
+      <img
+        className="h-12 rounded-full my-3"
+        src={`${img}`}
+        alt={`avatar of ${name}`}
+      />
       <div className="flex gap-6">
-        <p>{name}</p>
-        <p>{notification}</p>
+        <p className="font-bold italicc capitalize">{name.substring(0, 20)}</p>
+        <p className="font-semibold">{notification.substring(0, 70)}</p>
+      </div>
+      <div className="flex  text-xl  gap-5 ml-auto">
+        <i
+          onClick={() => {
+            dispatch({
+              type: "data/toggleNotification",
+              payload: index,
+            });
+          }}
+          className={` ${
+            status === true
+              ? "fa-solid fa-circle-check text-green-600"
+              : "fa-regular fa-circle-check"
+          }`}
+        ></i>
+        <i
+          onClick={() => {
+            dispatch({
+              type: "data/toggleImportant",
+              payload: index,
+            });
+          }}
+          className={` ${
+            isImportant === true
+              ? "fa-solid fa-star text-green-600"
+              : "fa-regular fa-star"
+          }`}
+        ></i>
+
+        <i
+          onClick={() => {
+            dispatch({
+              type: "data/del",
+              payload: index,
+            });
+          }}
+          className="fa-regular fa-trash-can"
+        ></i>
       </div>
     </div>
   );

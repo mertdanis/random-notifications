@@ -6,7 +6,6 @@ const MainProvider = createContext();
 
 const initialState = {
   data: [],
-  newNotifications: [],
   filter: "all",
 };
 
@@ -20,7 +19,7 @@ function MainContext({ children }) {
         };
 
       case "data/readAll":
-        const dataStatus_True = state.data.reduce(
+        const readAll = state.data.reduce(
           (prev, cur) => (cur.status = true),
           false
         );
@@ -51,12 +50,64 @@ function MainContext({ children }) {
           filter: action.payload,
         };
 
+      case "data/add":
+        const { title, body, id } = action.payload;
+
+        const newNotification = {
+          img: `https://i.pravatar.cc/150?u=${title}`,
+          name: title,
+          id,
+          notificationText: body,
+          status: false,
+        };
+        return {
+          ...state,
+          data: [newNotification, ...state.data],
+        };
+
+      case "data/toggleImportant":
+        const importantIndex = state.data[action.payload];
+
+        const importantNotification = state.data.map((value) => {
+          if (value === importantIndex) {
+            return { ...value, isImportant: !value?.isImportant };
+          }
+
+          return value;
+        });
+
+        return {
+          ...state,
+          data: importantNotification,
+        };
+
+      case "data/del":
+        const delIndex = state.data[action.payload];
+
+        const delNotification = state.data.filter((value) => {
+          return value !== delIndex;
+        });
+
+        return {
+          ...state,
+          data: delNotification,
+        };
+
+      case "notification/new/text":
+        return {
+          ...state,
+          newNotifications: action.payload,
+        };
+
       default:
         return state;
     }
   };
 
-  const [{ data, filter }, dispatch] = useReducer(reducer, initialState);
+  const [{ data, filter, isImportant }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,25 +129,34 @@ function MainContext({ children }) {
   }, []);
 
   useEffect(() => {
-    const fetchNewNotification = async () => {
-      try {
-        const res = await axios("");
+    const randomTime = Math.floor(Math.random() * 30000);
 
-        console.log(res);
+    const randomNotf = setTimeout(() => {
+      const fetchNewNotification = async () => {
+        const random = Math.floor(Math.random() * 100);
+        try {
+          const res = await axios.get(
+            "https://jsonplaceholder.typicode.com/posts"
+          );
 
-        dispatch({
-          type: "data/newNotification",
-          payload: res.data,
-        });
-      } catch (error) {
-        dispatch({
-          type: "error",
-        });
-      }
-    };
+          console.log(res.data);
 
-    fetchNewNotification();
-  }, []);
+          dispatch({
+            type: "data/add",
+            payload: res.data[random],
+          });
+        } catch (error) {
+          dispatch({
+            type: "fetch/error",
+            payload: error,
+          });
+        }
+      };
+      fetchNewNotification();
+    }, randomTime);
+
+    return () => clearTimeout(randomNotf);
+  }, [data.length]);
 
   const unreadedNotifications = data?.filter((content) => {
     if (content.status === false) {
@@ -104,9 +164,22 @@ function MainContext({ children }) {
     }
   });
 
+  const importantNotifications = data?.filter((content) => {
+    if (content?.isImportant === true) {
+      return content;
+    }
+  });
+
   return (
     <MainProvider.Provider
-      value={{ data, dispatch, filter, unreadedNotifications }}
+      value={{
+        data,
+        dispatch,
+        filter,
+        unreadedNotifications,
+        isImportant,
+        importantNotifications,
+      }}
     >
       {children}
     </MainProvider.Provider>
