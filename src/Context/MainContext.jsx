@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 
+import notificationSound from "../../public/sound/1.mp3";
 import axios from "axios";
+import { getNotfSound } from "../components/Audio";
 
 const MainProvider = createContext();
 
@@ -10,6 +12,8 @@ const initialState = {
 };
 
 function MainContext({ children }) {
+  const soundSrc = notificationSound;
+
   const reducer = (state, action) => {
     switch (action.type) {
       case "data":
@@ -128,9 +132,8 @@ function MainContext({ children }) {
     fetchData();
   }, []);
 
+  const randomTime = Math.floor(Math.random() * 300000000);
   useEffect(() => {
-    const randomTime = Math.floor(Math.random() * 30000);
-
     const randomNotf = setTimeout(() => {
       const fetchNewNotification = async () => {
         const random = Math.floor(Math.random() * 100);
@@ -138,8 +141,6 @@ function MainContext({ children }) {
           const res = await axios.get(
             "https://jsonplaceholder.typicode.com/posts"
           );
-
-          console.log(res.data);
 
           dispatch({
             type: "data/add",
@@ -153,10 +154,11 @@ function MainContext({ children }) {
         }
       };
       fetchNewNotification();
+      getNotfSound(soundSrc);
     }, randomTime);
 
     return () => clearTimeout(randomNotf);
-  }, [data.length]);
+  }, [randomTime]);
 
   const unreadedNotifications = data?.filter((content) => {
     if (content.status === false) {

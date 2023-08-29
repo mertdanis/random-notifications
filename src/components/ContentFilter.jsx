@@ -1,7 +1,5 @@
 import React from "react";
 
-import Button from "./Button";
-
 import { useData } from "../Context/MainContext";
 
 function ContentFilter() {
@@ -10,11 +8,11 @@ function ContentFilter() {
   return (
     <div className="flex justify-center items-center gap-3 ">
       <label className="font-bold" htmlFor="filter">
-        Filter Notifications:
+        Filter:
       </label>
 
       <select
-        className="bg-slate-500 "
+        className=" text-center bg-zinc-900 text-white"
         id="filter"
         onChange={(e) => {
           dispatch({
@@ -25,7 +23,7 @@ function ContentFilter() {
       >
         <option value="all">All</option>
         <option value="unread">Unread</option>
-        <option value="important">Important Notifications</option>
+        <option value="important">Important</option>
       </select>
     </div>
   );

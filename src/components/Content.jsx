@@ -6,7 +6,7 @@ function Content() {
     dispatch,
     filter,
     unreadedNotifications,
-    isImportant,
+
     importantNotifications,
   } = useData();
 
@@ -63,6 +63,10 @@ function Content() {
   );
 }
 
+function NoContent() {
+  return <div className="flex justify-center items-center">No Content!</div>;
+}
+
 function ContentDiv({
   name,
   notification,
@@ -74,8 +78,8 @@ function ContentDiv({
 }) {
   return (
     <div
-      className={`flex transition duration-700 items-center  gap-6 cursor-pointer  px-6 py-1 border-b-[2px] border-black ${
-        status === false ? "bg-gray-300" : ""
+      className={`flex transition duration-700 items-center  gap-6 cursor-pointer  px-6 py-1 border-b-[1px] border-black ${
+        status === false ? "bg-slate-300		" : ""
       }`}
     >
       <img
@@ -85,7 +89,7 @@ function ContentDiv({
       />
       <div className="flex gap-6">
         <p className="font-bold italicc capitalize">{name.substring(0, 20)}</p>
-        <p className="font-semibold">{notification.substring(0, 70)}</p>
+        <p className="font-semibold">{notification.substring(0, 75)}</p>
       </div>
       <div className="flex  text-xl  gap-5 ml-auto">
         <i
